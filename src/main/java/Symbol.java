@@ -8,13 +8,15 @@
  * @author Camile
  */
 public class Symbol {
+    int id;
     String nome;
     String categoria;
     String tipo;
     String valorInicial;
     String escopo;
 
-    public Symbol(String nome, String categoria, String tipo, String valorInicial, String escopo) {
+    public Symbol(int id, String nome, String categoria, String tipo, String valorInicial, String escopo) {
+        this.id = id;
         this.nome = nome;
         this.categoria = categoria;
         this.tipo = tipo;
@@ -24,7 +26,12 @@ public class Symbol {
 
     @Override
     public String toString() {
-        return String.format("| %-10s | %-10s | %-8s | %-12s | %-10s |",
-                nome, categoria, tipo, valorInicial == null ? "-" : valorInicial, escopo);
+        return String.format("| %-3d | %-10s | %-10s | %-8s | %-13s | %-10s |",
+                id,
+                nome,
+                categoria,
+                tipo,
+                valorInicial == null ? "-" : valorInicial,
+                escopo);
     }
 }
