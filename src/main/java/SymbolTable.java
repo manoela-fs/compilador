@@ -5,7 +5,7 @@ public class SymbolTable {
     private final Map<String, Symbol> table = new HashMap<>();
     private int nextId = 1;
 
-    // Adiciona identificador
+    // Adiciona simbolo
     public Symbol add(String name) {
         if (!table.containsKey(name)) {
             table.put(name, new Symbol(nextId++, name));
@@ -20,10 +20,10 @@ public class SymbolTable {
 
     // Imprime a tabela
     public void print() {
-        System.out.println("| ID | Nome |");
-        System.out.println("|----|------|");
+        System.out.printf("| %-3s | %-10s |\n", "ID", "Nome");
+        System.out.println("|-----|------------|");
         for (Symbol s : table.values()) {
-            System.out.println(s);
+            System.out.printf("| %-3d | %-10s |\n", s.id, s.name);
         }
     }
 }

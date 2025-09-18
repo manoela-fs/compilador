@@ -31,7 +31,7 @@ public class Main {
         st.print();
 
         // Imprime tokens
-        System.out.println("\nTokens e IDs:");
+        System.out.println("\nTokens:");
         input = CharStreams.fromString(code);
         lexer = new LangLexer(input);
         Vocabulary vocab = lexer.getVocabulary();
@@ -39,12 +39,14 @@ public class Main {
         while ((token = lexer.nextToken()).getType() != Token.EOF) {
             String text = token.getText();
             String tokenName = vocab.getSymbolicName(token.getType());
+
             if (token.getType() == LangLexer.ID) {
                 Symbol sym = st.get(text);
-                System.out.printf("Token: %-10s | Text: %-10s | ID: %d\n", tokenName, text, sym.id);
+                System.out.printf("Token: %-12s | Text: %-12s | ID: %d\n", tokenName, "'" + text + "'", sym.id);
             } else {
-                System.out.printf("Token: %-10s | Text: %s\n", tokenName, text);
+                System.out.printf("Token: %-12s | Text: %s\n", tokenName, "'" + text + "'");
             }
         }
+
     }
 }

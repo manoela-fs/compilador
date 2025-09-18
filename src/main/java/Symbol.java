@@ -9,7 +9,8 @@ public class Symbol {
 
     @Override
     public String toString() {
-        return String.format("| %d | %s |", id, name);
+        return String.format("| %-3d | %-10s |", id, name);
     }
+
 }
 
