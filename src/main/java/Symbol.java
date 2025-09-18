@@ -1,37 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author Camile
- */
 public class Symbol {
-    int id;
-    String nome;
-    String categoria;
-    String tipo;
-    String valorInicial;
-    String escopo;
+    public final int id;
+    public final String name;
 
-    public Symbol(int id, String nome, String categoria, String tipo, String valorInicial, String escopo) {
+    public Symbol(int id, String name) {
         this.id = id;
-        this.nome = nome;
-        this.categoria = categoria;
-        this.tipo = tipo;
-        this.valorInicial = valorInicial;
-        this.escopo = escopo;
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return String.format("| %-3d | %-10s | %-10s | %-8s | %-13s | %-10s |",
-                id,
-                nome,
-                categoria,
-                tipo,
-                valorInicial == null ? "-" : valorInicial,
-                escopo);
+        return String.format("| %d | %s |", id, name);
     }
 }
+

@@ -14,6 +14,8 @@ SCANF           : 'scanf';
 PRINTLN         : 'println';
 MAIN            : 'main';
 RETURN          : 'return';
+TRUE            : 'true';
+FALSE           : 'false';
 
 //Texto
 COMMENT : '//' ~[\r\n]* -> skip ;
