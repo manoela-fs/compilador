@@ -19,6 +19,15 @@ public class SymbolTableVisitor extends LangParserBaseVisitor<Void> {
     public List<Symbol> getTabela() {
         return tabela;
     }
+    
+    public Symbol get(String nome) {
+        for (Symbol s : tabela) {
+            if (s.nome.equals(nome)) {
+                return s;
+            }
+        }
+        return null;
+    }
 
     @Override
     public Void visitDeclaration(LangParser.DeclarationContext ctx) {

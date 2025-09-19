@@ -13,6 +13,8 @@ WHILE           : 'while';
 SCANF           : 'scanf';
 PRINTLN         : 'println';
 RETURN          : 'return';
+TRUE            : 'true';
+FALSE           : 'false';
 
 //Texto
 COMMENT : '//' ~[\r\n]* -> skip ;

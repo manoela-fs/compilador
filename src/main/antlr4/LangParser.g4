@@ -63,7 +63,7 @@ functionCall
 
 // Expressões (suporte a atribuição e operadores)
 expression
-    : ID ASSIGN expression           #assignExpr
+    : ID ASSIGN expression                     #assignExpr
     | expression (ADD|SUB|MUL|DIV|MOD) expression   #arithmeticExpr
     | expression (EQ|NEQ|LT|LE|GT|GE) expression   #comparisonExpr
     | expression (AND|OR) expression               #logicalExpr
@@ -73,6 +73,8 @@ expression
     | FLOAT_LITERAL                               #floatLiteralExpr
     | CHAR_LITERAL                                #charLiteralExpr
     | STRING                                      #stringLiteralExpr
+    | TRUE                                        #trueExpr
+    | FALSE                                       #falseExpr
     ;
 
 // Tipos

@@ -1,11 +1,5 @@
-
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.Token;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
@@ -19,9 +13,13 @@ public class Main {
             boolean flag = true;
             void main() {
                 if (x > 5 && flag) {
-                    println("x é maior que 5 e flag é true");
+                    println("x é maior que 5 e flag é true);
                 } else {
                     println("Outro caso");
+                      
+                    if (flag) {
+                        boolean bool = false;
+                    }
                 }
                 for (int i = 0; i < 10; i = i + 1) {
                     y = y + 0.1;
@@ -38,7 +36,6 @@ public class Main {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         LangParser parser = new LangParser(tokens);
 
-        // Listener de erro sintático
         parser.removeErrorListeners();
         parser.addErrorListener(new BaseErrorListener() {
             @Override
@@ -50,10 +47,8 @@ public class Main {
             }
         });
 
-        // Executa parser
         ParseTree tree = parser.program();
 
-        // Monta tabela de símbolos
         SymbolTableVisitor visitor = new SymbolTableVisitor();
         
         if (tree != null) {
@@ -66,6 +61,24 @@ public class Main {
         System.out.println("|-----|------------|------------|----------|---------------|------------|");
         for (Symbol s : visitor.getTabela()) {
             System.out.println(s);
+        }        
+        
+        System.out.println("\nTokens:");
+        input = CharStreams.fromString(code);
+        lexer = new LangLexer(input);
+        Token token;
+        Vocabulary vocab = lexer.getVocabulary();
+
+        while ((token = lexer.nextToken()).getType() != Token.EOF) {
+            String text = token.getText();
+            String tokenName = vocab.getSymbolicName(token.getType());
+
+            if (token.getType() == LangLexer.ID) {
+                Symbol symbol = visitor.get(text);
+                System.out.printf("Token: %-12s | Text: %-12s | ID: %d\n", tokenName, "'" + text + "'", symbol.id);
+            } else {
+                System.out.printf("Token: %-12s | Text: %s\n", tokenName, "'" + text + "'");
+            }
         }
     }
 }
