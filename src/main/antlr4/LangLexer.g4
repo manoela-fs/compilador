@@ -12,7 +12,6 @@ FOR             : 'for';
 WHILE           : 'while';
 SCANF           : 'scanf';
 PRINTLN         : 'println';
-MAIN            : 'main';
 RETURN          : 'return';
 
 //Texto
