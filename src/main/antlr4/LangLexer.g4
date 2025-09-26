@@ -62,3 +62,5 @@ COMMA  : ',' ;
 
 // Espaços em branco
 WS      : [ \t\r\n]+ -> skip;
+
+BAD_ID : [0-9]+ [a-zA-Z_][a-zA-Z0-9_]* ;

@@ -32,13 +32,17 @@ public class SymbolTableVisitor extends LangParserBaseVisitor<Void> {
     @Override
     public Void visitDeclaration(LangParser.DeclarationContext ctx) {
         String tipo = ctx.type().getText();
-        String nome = ctx.ID().getText();
-        String valorInicial = ctx.expression() != null ? ctx.expression().getText() : null;
 
-        tabela.add(new Symbol(contadorId++, nome, "Variavel", tipo, valorInicial, escopoAtual));
+        for (LangParser.VarDeclContext varCtx : ctx.varList().varDecl()) {
+            String nome = varCtx.ID().getText();
+            String valorInicial = varCtx.expression() != null ? varCtx.expression().getText() : null;
+
+            tabela.add(new Symbol(contadorId++, nome, "Variavel", tipo, valorInicial, escopoAtual));
+        }
         return null;
     }
 
+    
     @Override
     public Void visitFunctionDecl(LangParser.FunctionDeclContext ctx) {
         String nome = ctx.ID().getText();

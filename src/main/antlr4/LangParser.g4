@@ -9,7 +9,15 @@ program
 
 // Declaração de variável
 declaration
-    : type ID (ASSIGN expression)? SEMI
+    : type varList SEMI
+    ;
+
+varList
+    : varDecl (COMMA varDecl)*
+    ;
+
+varDecl
+    : ID (ASSIGN expression)?
     ;
 
 // Declaração de função
