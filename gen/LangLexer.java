@@ -1,4 +1,4 @@
-// Generated from C:/Users/10986789909/Documents/compilador/src/main/antlr4/LangLexer.g4 by ANTLR 4.13.2
+// Generated from C:/Users/10986789909/Documents/compilador-part2/src/main/antlr4/LangLexer.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
