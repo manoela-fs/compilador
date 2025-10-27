@@ -1,66 +1,55 @@
 lexer grammar LangLexer;
 
-// Palavras-reservadas
-INT_TYPE        : 'int';
-FLOAT_TYPE      : 'float';
-CHAR_TYPE       : 'char';
-BOOLEAN_TYPE    : 'boolean';
-VOID            : 'void';
-IF              : 'if';
-ELSE            : 'else';
-FOR             : 'for';
-WHILE           : 'while';
-SCANF           : 'scanf';
-PRINTLN         : 'println';
-RETURN          : 'return';
-TRUE            : 'true';
-FALSE           : 'false';
+// ======================
+// PALAVRAS-CHAVE
+// ======================
+VOID     : 'void';
+CHAR     : 'char';
+FLOAT    : 'float';
+INT      : 'int';
+BOOLEAN  : 'boolean';
+MAIN     : 'main';
+IF       : 'if';
+ELSE     : 'else';
+WHILE    : 'while';
+RETURN   : 'return';
+SCANF    : 'scanf';
+PRINTLN  : 'println';
+FUNC     : 'func';  // Usado para chamadas de função
 
-//Texto
-COMMENT : '//' ~[\r\n]* -> skip ;
-STRING : '"' .*? '"' ;
+// ======================
+// OPERADORES E SÍMBOLOS
+// ======================
+COMP     : '==' | '!=' | '<' | '<=' | '>' | '>=';
+PLUS     : '+';
+MINUS    : '-';
+MULT     : '*';
+DIV      : '/';
+MOD      : '%';
+AND      : '&&';
+OR       : '||';
+ASSIGN   : '=';
+NOT      : '!';
+COMMA    : ',';
+SEMI     : ';';
+LPAREN   : '(';
+RPAREN   : ')';
+LBRACE   : '{';
+RBRACE   : '}';
+LBRACK   : '[';
+RBRACK   : ']';
 
-//Caractere
-CHAR_LITERAL : '\'' . '\'' ;
+// ======================
+// CONSTANTES E IDENTIFICADORES
+// ======================
+TEXTO     : '"' (~["\r\n])* '"';
+fragment NUM_DEC   : [0-9]+ '.' [0-9]+;
+fragment NUM_INT   : [0-9]+;
+CONSTANTE : NUM_DEC | NUM_INT;
+ID        : [a-zA-Z_][a-zA-Z_0-9]*;
 
-//Numeros
-INT_LITERAL     : [0-9]+;
-FLOAT_LITERAL   : [0-9]+ '.' [0-9]+;
-
-// Identificador
-ID      : [a-zA-Z][a-zA-Z0-9_]*;
-
-// Operadores
-ASSIGN  : '=' ;
-
-ADD     : '+';
-SUB     : '-';
-MUL     : '*';
-DIV     : '/';
-MOD     : '%';
-
-AND     : '&&';
-OR      : '||';
-NOT     : '!';
-
-LT      : '<';
-LE      : '<=';
-GT      : '>';
-GE      : '>=';
-NEQ     : '!=';
-EQ      : '==';
-
-//Simbolos
-LPAREN : '(' ;
-RPAREN : ')' ;
-LBRACE : '{' ;
-RBRACE : '}' ;
-LBRACK : '[' ;
-RBRACK : ']' ;
-SEMI   : ';' ;
-COMMA  : ',' ;
-
-// Espaços em branco
-WS      : [ \t\r\n]+ -> skip;
-
-BAD_ID : [0-9]+ [a-zA-Z_][a-zA-Z0-9_]* ;
+// ======================
+// ESPAÇOS E COMENTÁRIOS
+// ======================
+WS        : [ \t\r\n]+ -> skip;
+COMMENT   : '//' ~[\r\n]* -> skip;

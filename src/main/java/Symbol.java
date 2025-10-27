@@ -8,30 +8,27 @@
  * @author Camile
  */
 public class Symbol {
-    int id;
-    String nome;
-    String categoria;
-    String tipo;
-    String valorInicial;
-    String escopo;
+    public final int id;
+    public final String nome;
+    public final String categoria; // "Variável", "Função", "Parâmetro"
+    public final String type;      // ex: "int", "float", "char", "boolean", "array(int,10)"
+    public final int width;        // largura em bytes (ex: int=4, float=8, char=1, boolean=1, array => n * innerWidth)
+    public final int offset;       // offset dentro do escopo
+    public final String escopo;    // nome do escopo (ex: "Global" ou "main" ou "soma")
 
-    public Symbol(int id, String nome, String categoria, String tipo, String valorInicial, String escopo) {
+    public Symbol(int id, String nome, String categoria, String type, int width, int offset, String escopo) {
         this.id = id;
         this.nome = nome;
         this.categoria = categoria;
-        this.tipo = tipo;
-        this.valorInicial = valorInicial;
+        this.type = type;
+        this.width = width;
+        this.offset = offset;
         this.escopo = escopo;
     }
 
     @Override
     public String toString() {
-        return String.format("| %-3d | %-10s | %-10s | %-8s | %-13s | %-10s |",
-                id,
-                nome,
-                categoria,
-                tipo,
-                valorInicial == null ? "-" : valorInicial,
-                escopo);
+        return String.format("| %-3d | %-10s | %-10s | %-18s | %-5d | %-6d | %-10s |",
+                id, nome, categoria, type == null ? "-" : type, width, offset, escopo);
     }
 }

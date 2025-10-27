@@ -2,93 +2,239 @@ parser grammar LangParser;
 
 options { tokenVocab=LangLexer; }
 
-// Regras principais
-program
-    : (declaration | functionDecl | statement)* EOF
+// ======================
+// REGRAS SINTÁTICAS (Parser)
+// ======================
+
+programa
+    : listaFuncoes principal EOF
     ;
 
-// Declaração de variável
-declaration
-    : type varList SEMI
+listaFuncoes
+    : decFuncao listaFuncoes
+    | /* vazio */
     ;
 
-varList
-    : varDecl (COMMA varDecl)*
+decFuncao
+    : tipoRetorno ID '(' parametros ')' bloco
     ;
 
-varDecl
-    : ID (ASSIGN expression)?
+tipoRetorno
+    : tipo
+    | VOID
     ;
 
-// Declaração de função
-functionDecl
-    : VOID ID LPAREN RPAREN block
+tipo
+    : tipoBase dimensao
     ;
 
-// Bloco de código
-block
-    : LBRACE statement* RBRACE
+tipoBase
+    : CHAR
+    | FLOAT
+    | INT
+    | BOOLEAN
     ;
 
-// Declarações dentro de bloco
-statement
-    : block
-    | declaration
-    | ifStatement
-    | forStatement
-    | whileStatement
-    | returnStatement
-    | exprStatement
+dimensao
+    : '[' NUM_INT ']' dimensao
+    | /* vazio */
     ;
 
-// Estruturas de controle
-ifStatement
-    : IF LPAREN expression RPAREN statement (ELSE statement)?
+parametros
+    : tipo ID listaParametros
+    | /* vazio */
     ;
 
-forStatement
-    : FOR LPAREN declaration expression SEMI expression RPAREN statement
+listaParametros
+    : ',' tipo ID listaParametros
+    | /* vazio */
     ;
 
-whileStatement
-    : WHILE LPAREN expression RPAREN statement
+principal
+    : MAIN '(' ')' bloco
     ;
 
-returnStatement
-    : RETURN (expression)? SEMI
+bloco
+    : '{' listaVariaveis comandos '}'
     ;
 
-// Expressões e chamadas de função
-exprStatement
-    : expression SEMI
-    | functionCall SEMI
+listaVariaveis
+    : tipo ID listaId ';' listaVariaveis
+    | /* vazio */
     ;
 
-functionCall
-    : PRINTLN LPAREN (expression)? RPAREN
-    | SCANF LPAREN (expression)? RPAREN
+listaId
+    : ',' ID listaId
+    | /* vazio */
     ;
 
-// Expressões (suporte a atribuição e operadores)
-expression
-    : ID ASSIGN expression                     #assignExpr
-    | expression (ADD|SUB|MUL|DIV|MOD) expression   #arithmeticExpr
-    | expression (EQ|NEQ|LT|LE|GT|GE) expression   #comparisonExpr
-    | expression (AND|OR) expression               #logicalExpr
-    | LPAREN expression RPAREN                     #parenExpr
-    | ID                                          #idExpr
-    | INT_LITERAL                                 #intLiteralExpr
-    | FLOAT_LITERAL                               #floatLiteralExpr
-    | CHAR_LITERAL                                #charLiteralExpr
-    | STRING                                      #stringLiteralExpr
-    | TRUE                                        #trueExpr
-    | FALSE                                       #falseExpr
+comandos
+    : comando comandos
+    | /* vazio */
     ;
 
-// Tipos
-type
-    : INT_TYPE
-    | FLOAT_TYPE
-    | CHAR_TYPE
-    | BOOLEAN_TYPE
+comando
+    : leitura
+    | escrita
+    | atribuicao
+    | funcao
+    | selecao
+    | enquanto
+    | retorno
+    ;
+
+leitura
+    : SCANF '(' termoLeitura novoTermoLeitura ')' ';'
+    ;
+
+termoLeitura
+    : ID dimensao2
+    ;
+
+novoTermoLeitura
+    : ',' termoLeitura novoTermoLeitura
+    | /* vazio */
+    ;
+
+dimensao2
+    : '[' exprAditiva ']' dimensao2
+    | /* vazio */
+    ;
+
+escrita
+    : PRINTLN '(' termoEscrita novoTermoEscrita ')' ';'
+    ;
+
+termoEscrita
+    : ID dimensao2
+    | CONSTANTE
+    | TEXTO
+    ;
+
+novoTermoEscrita
+    : ',' termoEscrita novoTermoEscrita
+    | /* vazio */
+    ;
+
+selecao
+    : IF '(' expressao ')' bloco senao
+    ;
+
+senao
+    : ELSE bloco
+    | /* vazio */
+    ;
+
+enquanto
+    : WHILE '(' expressao ')' bloco
+    ;
+
+atribuicao
+    : ID '=' complemento ';'
+    ;
+
+complemento
+    : expressao
+    | funcao
+    ;
+
+funcao
+    : FUNC ID '(' argumentos ')'
+    ;
+
+argumentos
+    : expressao novoArgumento
+    | /* vazio */
+    ;
+
+novoArgumento
+    : ',' expressao novoArgumento
+    | /* vazio */
+    ;
+
+retorno
+    : RETURN expressao ';'
+    ;
+
+// ======================
+// EXPRESSÕES
+// ======================
+
+expressao
+    : exprOu
+    ;
+
+exprOu
+    : exprE exprOu2
+    ;
+
+exprOu2
+    : OR exprE exprOu2
+    | /* vazio */
+    ;
+
+exprE
+    : exprRelacional exprE2
+    ;
+
+exprE2
+    : AND exprRelacional exprE2
+    | /* vazio */
+    ;
+
+exprRelacional
+    : exprAditiva exprRelacional2
+    ;
+
+exprRelacional2
+    : COMP exprAditiva
+    | /* vazio */
+    ;
+
+exprAditiva
+    : exprMultiplicativa exprAditiva2
+    ;
+
+exprAditiva2
+    : opAditivo exprMultiplicativa exprAditiva2
+    | /* vazio */
+    ;
+
+opAditivo
+    : '+'
+    | '-'
+    ;
+
+exprMultiplicativa
+    : fator exprMultiplicativa2
+    ;
+
+exprMultiplicativa2
+    : opMultiplicativo fator exprMultiplicativa2
+    | /* vazio */
+    ;
+
+opMultiplicativo
+    : '*'
+    | '/'
+    | '%'
+    ;
+
+fator
+    : sinal termo
+    | TEXTO
+    | NOT fator
+    | '(' expressao ')'
+    | funcao
+    ;
+
+termo
+    : ID dimensao2
+    | CONSTANTE
+    ;
+
+sinal
+    : '+'
+    | '-'
+    | /* vazio */
     ;
