@@ -38,7 +38,7 @@ public class Main {
                 
                 main() {
                     int a, b, c;
-                    float v[5];
+                    float[5] v;
                     boolean ok;
                 
                     a = 10;
@@ -60,18 +60,17 @@ public class Main {
                     v[0] = 1.5;
                     println(v[0]);
                 }
-                
                 """;
 
         // Criar CharStream a partir da string
         CharStream input = CharStreams.fromString(code);
 
-        // Criar o lexer e o parser
+        // Criar lexer e parser
         LangLexer lexer = new LangLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         LangParser parser = new LangParser(tokens);
 
-        // Mostrar erros detalhados
+        // Remover listeners padrão e adicionar diagnóstico
         parser.removeErrorListeners();
         parser.addErrorListener(new DiagnosticErrorListener());
         parser.addErrorListener(ConsoleErrorListener.INSTANCE);
@@ -79,8 +78,28 @@ public class Main {
         // Parse do programa
         ParseTree tree = parser.program();
 
-        // Print da árvore gerada
+        // Print da árvore sintática
         System.out.println("\n🌳 Árvore sintática:");
         System.out.println(tree.toStringTree(parser));
+
+        // =================== Análise Semântica ===================
+        ErrorReporter errorReporter = new ErrorReporter();
+        SymbolTable symbolTable = new SymbolTable(errorReporter);
+        SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(symbolTable, errorReporter);
+
+        // Executar análise semântica
+        semanticAnalyzer.visit(tree);
+
+        // Print da tabela de símbolos
+        System.out.println("\n📋 Tabela de Símbolos:");
+        symbolTable.imprimirTabelaHierarquica();
+
+        // Print de erros semânticos, se houver
+        if (errorReporter.hasErrors()) {
+            System.out.println("\n⚠️ Erros semânticos:");
+            errorReporter.printErrors();
+        } else {
+            System.out.println("\n✅ Análise semântica concluída sem erros.");
+        }
     }
 }
