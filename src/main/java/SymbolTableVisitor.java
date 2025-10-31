@@ -386,13 +386,12 @@ public class SymbolTableVisitor extends LangParserBaseVisitor<String> {
 
     @Override
     public String visitExprMultiplicativa(LangParser.ExprMultiplicativaContext ctx) {
-        String left = visit(ctx.fator());
-        if (ctx.exprMultiplicativa2() != null) {
-            String right = visit(ctx.exprMultiplicativa2());
+        if (ctx == null) return null;
+        String left = ctx.fator() != null ? visit(ctx.fator()) : null;
+        String right = ctx.exprMultiplicativa2() != null ? visit(ctx.exprMultiplicativa2()) : null;
+        if (right != null) {
             String promoted = promotedNumericType(left, right);
-            if (promoted == null) {
-                addError("Tipos incompatíveis em operação multiplicativa");
-            }
+            if (promoted == null) addError("Tipos incompatíveis em operação multiplicativa");
             return promoted;
         }
         return left;
@@ -400,13 +399,12 @@ public class SymbolTableVisitor extends LangParserBaseVisitor<String> {
 
     @Override
     public String visitExprMultiplicativa2(LangParser.ExprMultiplicativa2Context ctx) {
-        String left = visit(ctx.fator());
-        if (ctx.exprMultiplicativa2() != null) {
-            String right = visit(ctx.exprMultiplicativa2());
+        if (ctx == null) return null;
+        String left = ctx.fator() != null ? visit(ctx.fator()) : null;
+        String right = ctx.exprMultiplicativa2() != null ? visit(ctx.exprMultiplicativa2()) : null;
+        if (right != null) {
             String promoted = promotedNumericType(left, right);
-            if (promoted == null) {
-                addError("Tipos incompatíveis em operação multiplicativa");
-            }
+            if (promoted == null) addError("Tipos incompatíveis em operação multiplicativa");
             return promoted;
         }
         return left;
@@ -414,13 +412,12 @@ public class SymbolTableVisitor extends LangParserBaseVisitor<String> {
 
     @Override
     public String visitExprAditiva(LangParser.ExprAditivaContext ctx) {
-        String left = visit(ctx.exprMultiplicativa());
-        if (ctx.exprAditiva2() != null) {
-            String right = visit(ctx.exprAditiva2());
+        if (ctx == null) return null;
+        String left = ctx.exprMultiplicativa() != null ? visit(ctx.exprMultiplicativa()) : null;
+        String right = ctx.exprAditiva2() != null ? visit(ctx.exprAditiva2()) : null;
+        if (right != null) {
             String promoted = promotedNumericType(left, right);
-            if (promoted == null) {
-                addError("Tipos incompatíveis em operação aditiva");
-            }
+            if (promoted == null) addError("Tipos incompatíveis em operação aditiva");
             return promoted;
         }
         return left;
@@ -428,13 +425,12 @@ public class SymbolTableVisitor extends LangParserBaseVisitor<String> {
 
     @Override
     public String visitExprAditiva2(LangParser.ExprAditiva2Context ctx) {
-        String left = visit(ctx.exprMultiplicativa());
-        if (ctx.exprAditiva2() != null) {
-            String right = visit(ctx.exprAditiva2());
+        if (ctx == null) return null;
+        String left = ctx.exprMultiplicativa() != null ? visit(ctx.exprMultiplicativa()) : null;
+        String right = ctx.exprAditiva2() != null ? visit(ctx.exprAditiva2()) : null;
+        if (right != null) {
             String promoted = promotedNumericType(left, right);
-            if (promoted == null) {
-                addError("Tipos incompatíveis em operação aditiva");
-            }
+            if (promoted == null) addError("Tipos incompatíveis em operação aditiva");
             return promoted;
         }
         return left;
@@ -442,9 +438,11 @@ public class SymbolTableVisitor extends LangParserBaseVisitor<String> {
 
     @Override
     public String visitExprRelacional(LangParser.ExprRelacionalContext ctx) {
-        String leftType = visit(ctx.exprAditiva());
-        if (ctx.exprRelacional2().COMP() != null) {
-            String rightType = visit(ctx.exprRelacional2().exprAditiva());
+        if (ctx == null) return null;
+        String leftType = ctx.exprAditiva() != null ? visit(ctx.exprAditiva()) : null;
+        LangParser.ExprRelacional2Context rightCtx = ctx.exprRelacional2();
+        if (rightCtx != null && rightCtx.COMP() != null) {
+            String rightType = rightCtx.exprAditiva() != null ? visit(rightCtx.exprAditiva()) : null;
             if (!isNumeric(leftType) || !isNumeric(rightType)) {
                 addError("Operador relacional requer tipos numéricos");
             } else if (!typesCompatible(leftType, rightType) && !typesCompatible(rightType, leftType)) {
@@ -457,9 +455,10 @@ public class SymbolTableVisitor extends LangParserBaseVisitor<String> {
 
     @Override
     public String visitExprE(LangParser.ExprEContext ctx) {
-        String left = visit(ctx.exprRelacional());
-        if (ctx.exprE2() != null && !ctx.exprE2().getText().isEmpty()) {
-            String right = visit(ctx.exprE2());
+        if (ctx == null) return null;
+        String left = ctx.exprRelacional() != null ? visit(ctx.exprRelacional()) : null;
+        String right = ctx.exprE2() != null ? visit(ctx.exprE2()) : null;
+        if (right != null) {
             if (!"boolean".equals(left) || !"boolean".equals(right)) {
                 addError("Operador && requer operandos booleanos");
             }
@@ -470,22 +469,24 @@ public class SymbolTableVisitor extends LangParserBaseVisitor<String> {
 
     @Override
     public String visitExprE2(LangParser.ExprE2Context ctx) {
-        String typeHere = visit(ctx.exprRelacional());
-        if (ctx.exprE2() != null) {
-            String tail = visit(ctx.exprE2());
-            if (!"boolean".equals(typeHere) || !"boolean".equals(tail)) {
+        if (ctx == null) return null;
+        String left = ctx.exprRelacional() != null ? visit(ctx.exprRelacional()) : null;
+        String right = ctx.exprE2() != null ? visit(ctx.exprE2()) : null;
+        if (right != null) {
+            if (!"boolean".equals(left) || !"boolean".equals(right)) {
                 addError("Operador && requer operandos booleanos");
             }
             return "boolean";
         }
-        return typeHere;
+        return left;
     }
 
     @Override
     public String visitExprOu(LangParser.ExprOuContext ctx) {
-        String left = visit(ctx.exprE());
-        if (ctx.exprOu2() != null && !ctx.exprOu2().getText().isEmpty()) {
-            String right = visit(ctx.exprOu2());
+        if (ctx == null) return null;
+        String left = ctx.exprE() != null ? visit(ctx.exprE()) : null;
+        String right = ctx.exprOu2() != null ? visit(ctx.exprOu2()) : null;
+        if (right != null) {
             if (!"boolean".equals(left) || !"boolean".equals(right)) {
                 addError("Operador || requer operandos booleanos");
             }
@@ -496,16 +497,18 @@ public class SymbolTableVisitor extends LangParserBaseVisitor<String> {
 
     @Override
     public String visitExprOu2(LangParser.ExprOu2Context ctx) {
-        String typeHere = visit(ctx.exprE());
-        if (ctx.exprOu2() != null) {
-            String tail = visit(ctx.exprOu2());
-            if (!"boolean".equals(typeHere) || !"boolean".equals(tail)) {
+        if (ctx == null) return null;
+        String left = ctx.exprE() != null ? visit(ctx.exprE()) : null;
+        String right = ctx.exprOu2() != null ? visit(ctx.exprOu2()) : null;
+        if (right != null) {
+            if (!"boolean".equals(left) || !"boolean".equals(right)) {
                 addError("Operador || requer operandos booleanos");
             }
             return "boolean";
         }
-        return typeHere;
+        return left;
     }
+
 
     public static class Symbol {
         public final int id;
