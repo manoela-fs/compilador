@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class TypeChecker {
 
     private final ErrorReporter errorReporter;
@@ -8,22 +10,26 @@ public class TypeChecker {
 
     // ================= Atribuição =================
     public boolean checkAssignment(Type target, Type value, int line) {
-        if (target != null && value != null && isCompatible(target, value)) {
+        if (target == null || value == null) return false;
+
+        if (isCompatible(target, value) || canCoerce(value, target)) {
             return true;
-        } else {
-            errorReporter.report("Tipo incompatível: não é possível atribuir " + value + " a " + target, line);
-            return false;
         }
+
+        errorReporter.report("Tipo incompatível: não é possível atribuir " + value + " a " + target, line);
+        return false;
     }
 
     // ================= Compatibilidade =================
     public boolean isCompatible(Type t1, Type t2) {
         if (t1 == null || t2 == null) return false;
 
-        if (t1 instanceof PrimitiveType && t2 instanceof PrimitiveType) {
-            return t1 == t2;
+        // --- Tipos primitivos ---
+        if (t1 instanceof PrimitiveType p1 && t2 instanceof PrimitiveType p2) {
+            return p1.equals(p2);
         }
 
+        // --- Arrays ---
         if (t1 instanceof ArrayType a1 && t2 instanceof ArrayType a2) {
             int rank1 = getArrayRank(a1);
             int rank2 = getArrayRank(a2);
@@ -54,6 +60,15 @@ public class TypeChecker {
         return cur;
     }
 
+    // ================= Coerção implícita =================
+    private boolean canCoerce(Type from, Type to) {
+        if (from instanceof PrimitiveType f && to instanceof PrimitiveType t) {
+            // int → float é permitido implicitamente
+            return (f == PrimitiveType.INT && t == PrimitiveType.FLOAT);
+        }
+        return false;
+    }
+
     // ================= Operações aritméticas =================
     public boolean checkArithmetic(Type left, Type right, int line) {
         if (isNumeric(left) && isNumeric(right)) return true;
@@ -68,7 +83,8 @@ public class TypeChecker {
     }
 
     private boolean isNumeric(Type type) {
-        return type instanceof PrimitiveType pt && (pt == PrimitiveType.INT || pt == PrimitiveType.FLOAT);
+        return type instanceof PrimitiveType pt &&
+                (pt == PrimitiveType.INT || pt == PrimitiveType.FLOAT);
     }
 
     // ================= Operações lógicas =================
@@ -80,7 +96,7 @@ public class TypeChecker {
 
     public boolean checkLogicalUnary(Type operand, int line) {
         if (isBoolean(operand)) return true;
-        errorReporter.report("Expressão não-booleano em contexto lógico: " + operand, line);
+        errorReporter.report("Expressão não booleana em contexto lógico: " + operand, line);
         return false;
     }
 
@@ -90,14 +106,19 @@ public class TypeChecker {
 
     // ================= Operações de igualdade =================
     public boolean checkEquality(Type left, Type right, int line) {
-        if (left != null && right != null && isCompatible(left, right)) return true;
+        if (left == null || right == null) return false;
+
+        if (isCompatible(left, right) || canCoerce(left, right) || canCoerce(right, left)) {
+            return true;
+        }
+
         errorReporter.report("Comparação de igualdade inválida entre " + left + " e " + right, line);
         return false;
     }
 
     // ================= Operações relacionais =================
     public boolean checkRelational(Type left, Type right, int line) {
-        if (left != null && right != null && isNumeric(left) && isNumeric(right)) return true;
+        if (isNumeric(left) && isNumeric(right)) return true;
         errorReporter.report("Comparação relacional inválida entre " + left + " e " + right, line);
         return false;
     }
@@ -116,31 +137,36 @@ public class TypeChecker {
     }
 
     // ================= Indexação / Arrays =================
-    public boolean checkIndexIsInteger(Type indexType, int line) {
-        if (indexType instanceof PrimitiveType pt && pt == PrimitiveType.INT) return true;
-        errorReporter.report("Índice de array deve ser int, mas é " + indexType, line);
-        return false;
-    }
-
-    public Type getElementTypeAfterIndex(Type arrayType, int numIndices, int line) {
+    public Type getElementTypeAfterIndex(Type arrayType, List<Integer> indices, int line) {
         Type cur = arrayType;
         int consumed = 0;
 
-        while (consumed < numIndices) {
+        for (Integer idxValue : indices) {
             if (!(cur instanceof ArrayType arr)) {
-                errorReporter.report("Tentativa de indexar além das dimensões disponíveis (indexes=" + numIndices + ").", line);
+                errorReporter.report("Tentativa de indexar tipo não-array (" + arrayType + ") com " + indices.size() + " índices.", line);
                 return null;
             }
+
+            // Checa limites se índice é literal
+            if (idxValue != null && (idxValue < 0 || idxValue >= arr.getSize())) {
+                errorReporter.report("Índice " + idxValue + " fora do limite da dimensão (0.." + (arr.getSize() - 1) + ")", line);
+            }
+
             cur = arr.getInnerType();
             consumed++;
+        }
+
+        // Se sobram dimensões e não há índices suficientes
+        if (cur instanceof ArrayType arr && consumed < indices.size()) {
+            errorReporter.report("Número de índices menor que o número de dimensões do array.", line);
         }
 
         return cur;
     }
 
+
     // ================= Width =================
     public int widthOf(Type type) {
-        return type.getWidth();
+        return type != null ? type.getWidth() : 0;
     }
-
 }

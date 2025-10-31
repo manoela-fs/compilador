@@ -47,7 +47,6 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
         String funcName = ctx.ID().getText();
         Type returnType = visit(ctx.tipoRetorno());
 
-        // Verifica duplicata no escopo atual (Global)
         if (symbolTable.buscarNoEscopoAtual(funcName) != null) {
             errorReporter.report("Função '" + funcName + "' já declarada neste escopo.", ctx.start.getLine());
         } else {
@@ -55,7 +54,6 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
             symbolTable.adicionarSimbolo(funcSymbol, ctx.start.getLine());
         }
 
-        // Abre escopo da função
         symbolTable.abrirEscopo(funcName);
         Type previousReturnType = currentFunctionReturnType;
         currentFunctionReturnType = returnType;
@@ -63,10 +61,8 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
         if (ctx.parametros() != null) visit(ctx.parametros());
         visit(ctx.bloco());
 
-        // Fecha escopo da função
         currentFunctionReturnType = previousReturnType;
         symbolTable.fecharEscopo();
-
         return null;
     }
 
@@ -156,14 +152,12 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
         return null;
     }
 
-    // ================= LISTADECLARACOES → DECLARACAO* =================
     @Override
     public Type visitListaDeclaracoes(LangParser.ListaDeclaracoesContext ctx) {
         for (LangParser.DeclaracaoContext d : ctx.declaracao()) visit(d);
         return null;
     }
 
-    // ================= DECLARACAO → tipo listaIds ; =================
     @Override
     public Type visitDeclaracao(LangParser.DeclaracaoContext ctx) {
         Type varType = visit(ctx.tipo());
@@ -180,7 +174,6 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
         return null;
     }
 
-    // ================= VAR → ID ( INDICE )* =================
     @Override
     public Type visitVar(LangParser.VarContext ctx) {
         String name = ctx.ID().getText();
@@ -193,12 +186,24 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
         Type type = sym.type;
 
         if (ctx.indice() != null) {
-            List<LangParser.IndiceContext> indices = collectIndices(ctx.indice());
-            for (LangParser.IndiceContext ic : indices) {
+            List<LangParser.IndiceContext> indicesCtx = collectIndices(ctx.indice());
+            List<Integer> literalIndices = new ArrayList<>();
+
+            for (LangParser.IndiceContext ic : indicesCtx) {
                 Type idxType = visit(ic.expressao());
-                typeChecker.checkIndexIsInteger(idxType, ctx.start.getLine());
+
+                if (!(idxType instanceof PrimitiveType pt && pt == PrimitiveType.INT)) {
+                    errorReporter.report("Índice de array deve ser int, mas é " + idxType, ic.start.getLine());
+                }
+
+                Integer literal = null;
+                if (ic.expressao().getText().matches("\\d+")) {
+                    literal = Integer.parseInt(ic.expressao().getText());
+                }
+                literalIndices.add(literal);
             }
-            type = typeChecker.getElementTypeAfterIndex(type, indices.size(), ctx.start.getLine());
+
+            type = typeChecker.getElementTypeAfterIndex(type, literalIndices, ctx.start.getLine());
         }
 
         return type;
@@ -214,7 +219,6 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
         return list;
     }
 
-    // ================= ATRIBUICAO → VAR = EXPRESSAO ; =================
     @Override
     public Type visitAtribuicao(LangParser.AtribuicaoContext ctx) {
         Type left = visit(ctx.var());
@@ -232,6 +236,7 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
         for (int i = 1; i < ctx.andExp().size(); i++) {
             Type next = visit(ctx.andExp(i));
             typeChecker.checkLogicalBinary(t, next, ctx.start.getLine());
+            t = PrimitiveType.BOOLEAN;
         }
         return t;
     }
@@ -242,6 +247,7 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
         for (int i = 1; i < ctx.eqExp().size(); i++) {
             Type next = visit(ctx.eqExp(i));
             typeChecker.checkLogicalBinary(t, next, ctx.start.getLine());
+            t = PrimitiveType.BOOLEAN;
         }
         return t;
     }
@@ -252,6 +258,7 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
         for (int i = 1; i < ctx.relExp().size(); i++) {
             Type next = visit(ctx.relExp(i));
             typeChecker.checkEquality(t, next, ctx.start.getLine());
+            t = PrimitiveType.BOOLEAN;
         }
         return t;
     }
@@ -262,6 +269,7 @@ public class SemanticAnalyzer extends LangParserBaseVisitor<Type> {
         for (int i = 1; i < ctx.addExp().size(); i++) {
             Type next = visit(ctx.addExp(i));
             typeChecker.checkRelational(t, next, ctx.start.getLine());
+            t = PrimitiveType.BOOLEAN;
         }
         return t;
     }

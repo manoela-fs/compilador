@@ -65,27 +65,30 @@
             return currentScope.getName();
         }
 
-        /** Imprime todos os escopos e símbolos de forma hierárquica */
-        public void imprimirTabelaHierarquica() {
-            System.out.println("📋 Tabelas de Símbolos por Escopo:");
-
-            String fmtHeader = "%-4s | %-15s | %-10s | %-20s | %-5s | %-6s%n";
-            String fmtRow    = "%-4d | %-15s | %-10s | %-20s | %-5d | %-6d%n";
+        /** Imprime todos os escopos */
+        public void imprimirTabelas() {
+            String fmtHeader = "│ %-4s │ %-18s │ %-12s │ %-22s │ %-7s │ %-7s │%n";
+            String fmtRow    = "│ %-4d │ %-18s │ %-12s │ %-22s │ %-7d │ %-7d │%n";
+            String divisor   = "├──────┼────────────────────┼──────────────┼────────────────────────┼─────────┼─────────┤";
 
             for (Scope s : allScopes) {
                 if (s.getSymbols().isEmpty()) continue;
-                System.out.println("\n===== TABELA DE SÍMBOLOS (" + s.getName() + ") =====");
+
+                System.out.printf(s.getName() + "\n");
+                System.out.println("┌──────┬────────────────────┬──────────────┬────────────────────────┬─────────┬─────────┐");
                 System.out.printf(fmtHeader, "ID", "Nome", "Categoria", "Tipo", "Width", "Offset");
-                System.out.println("-------------------------------------------------------------");
+                System.out.println(divisor);
 
                 for (Symbol sym : s.getSymbols().values()) {
                     String tipoStr = sym.type != null ? sym.type.toString() : "unknown";
                     String categoria = sym.categoria != null ? sym.categoria.name() : "UNKNOWN";
                     System.out.printf(fmtRow, sym.id, sym.nome, categoria, tipoStr, sym.width, sym.offset);
                 }
+
+                System.out.println("└──────┴────────────────────┴──────────────┴────────────────────────┴─────────┴─────────┘\n");
             }
-            System.out.println("\n==============================");
         }
+
 
         /** Retorna o nível atual (profundidade) */
         public int getNivelAtual() {
