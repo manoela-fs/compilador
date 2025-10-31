@@ -1,4 +1,4 @@
-// Generated from C:/Users/10986789909/Documents/compilador-part2/src/main/antlr4/LangParser.g4 by ANTLR 4.13.2
+// Generated from C:/Users/manoe/IdeaProjects/compilador-master/src/main/antlr4/LangParser.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -127,29 +127,25 @@ public interface LangParserListener extends ParseTreeListener {
 	 */
 	void exitListaDeclaracoes(LangParser.ListaDeclaracoesContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code declArray}
-	 * labeled alternative in {@link LangParser#declaracao}.
+	 * Enter a parse tree produced by {@link LangParser#declaracao}.
 	 * @param ctx the parse tree
 	 */
-	void enterDeclArray(LangParser.DeclArrayContext ctx);
+	void enterDeclaracao(LangParser.DeclaracaoContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code declArray}
-	 * labeled alternative in {@link LangParser#declaracao}.
+	 * Exit a parse tree produced by {@link LangParser#declaracao}.
 	 * @param ctx the parse tree
 	 */
-	void exitDeclArray(LangParser.DeclArrayContext ctx);
+	void exitDeclaracao(LangParser.DeclaracaoContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code declSimples}
-	 * labeled alternative in {@link LangParser#declaracao}.
+	 * Enter a parse tree produced by {@link LangParser#listaIds}.
 	 * @param ctx the parse tree
 	 */
-	void enterDeclSimples(LangParser.DeclSimplesContext ctx);
+	void enterListaIds(LangParser.ListaIdsContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code declSimples}
-	 * labeled alternative in {@link LangParser#declaracao}.
+	 * Exit a parse tree produced by {@link LangParser#listaIds}.
 	 * @param ctx the parse tree
 	 */
-	void exitDeclSimples(LangParser.DeclSimplesContext ctx);
+	void exitListaIds(LangParser.ListaIdsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#dimensoes}.
 	 * @param ctx the parse tree
@@ -240,16 +236,6 @@ public interface LangParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitWhileStatement(LangParser.WhileStatementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link LangParser#forStatement}.
-	 * @param ctx the parse tree
-	 */
-	void enterForStatement(LangParser.ForStatementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LangParser#forStatement}.
-	 * @param ctx the parse tree
-	 */
-	void exitForStatement(LangParser.ForStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#chamada}.
 	 * @param ctx the parse tree

@@ -1,4 +1,4 @@
-// Generated from C:/Users/10986789909/Documents/compilador-part2/src/main/antlr4/LangParser.g4 by ANTLR 4.13.2
+// Generated from C:/Users/manoe/IdeaProjects/compilador-master/src/main/antlr4/LangParser.g4 by ANTLR 4.13.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -82,19 +82,17 @@ public interface LangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitListaDeclaracoes(LangParser.ListaDeclaracoesContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code declArray}
-	 * labeled alternative in {@link LangParser#declaracao}.
+	 * Visit a parse tree produced by {@link LangParser#declaracao}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDeclArray(LangParser.DeclArrayContext ctx);
+	T visitDeclaracao(LangParser.DeclaracaoContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code declSimples}
-	 * labeled alternative in {@link LangParser#declaracao}.
+	 * Visit a parse tree produced by {@link LangParser#listaIds}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDeclSimples(LangParser.DeclSimplesContext ctx);
+	T visitListaIds(LangParser.ListaIdsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#dimensoes}.
 	 * @param ctx the parse tree
@@ -149,12 +147,6 @@ public interface LangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitWhileStatement(LangParser.WhileStatementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link LangParser#forStatement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitForStatement(LangParser.ForStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#chamada}.
 	 * @param ctx the parse tree

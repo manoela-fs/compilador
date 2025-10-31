@@ -28,9 +28,10 @@ tipoRetorno
     | VOID
     ;
 
-// TIPO → TIPOBASE
+// 🔹 TIPO → TIPOBASE DIMENSOES?
+// Agora qualquer tipo pode ser um array multidimensional
 tipo
-    : tipoBase
+    : tipoBase dimensoes?
     ;
 
 // TIPOBASE → char | float | int | boolean
@@ -46,7 +47,8 @@ parametros
     : listaParams?
     ;
 
-// LISTAPARAMS → TIPO ID ( , TIPO ID )*
+// 🔹 LISTAPARAMS → TIPO ID ( , TIPO ID )*
+// Os parâmetros agora aceitam tipo com dimensões (ex: int[5] a)
 listaParams
     : tipo ID ( COMMA tipo ID )*
     ;
@@ -66,10 +68,14 @@ listaDeclaracoes
     : declaracao*
     ;
 
-// DECLARACAO → ID ([ ])+ ; | ID ;
+// DECLARACAO → tipo listaIds SEMI
 declaracao
-    : tipoBase ID dimensoes SEMI           #declArray
-    | tipoBase ID SEMI                     #declSimples
+    : tipo listaIds SEMI
+    ;
+
+// LISTAIDS → ID ( , ID )*
+listaIds
+    : ID ( COMMA ID )*
     ;
 
 // DIMENSOES → [ INT_LITERAL ] (recursivo)
@@ -105,11 +111,10 @@ indice
     : LBRACK expressao RBRACK indice?
     ;
 
-// CONTROLE → IF | WHILE | FOR
+// CONTROLE → IF | WHILE
 controle
     : ifStatement
     | whileStatement
-    | forStatement
     ;
 
 // IF → if ( EXPRESSAO ) BLOCO ( else BLOCO )?
@@ -120,11 +125,6 @@ ifStatement
 // WHILE → while ( EXPRESSAO ) BLOCO
 whileStatement
     : WHILE LPAREN expressao RPAREN bloco
-    ;
-
-// FOR → for ( ATRIBUICAO EXPRESSAO ; ATRIBUICAO ) BLOCO
-forStatement
-    : FOR LPAREN atribuicao expressao SEMI atribuicao RPAREN bloco
     ;
 
 // CHAMADA → SCANF ( VAR ) | PRINTLN ( EXPRESSAO )

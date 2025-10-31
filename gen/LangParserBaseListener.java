@@ -1,4 +1,4 @@
-// Generated from C:/Users/10986789909/Documents/compilador-part2/src/main/antlr4/LangParser.g4 by ANTLR 4.13.2
+// Generated from C:/Users/manoe/IdeaProjects/compilador-master/src/main/antlr4/LangParser.g4 by ANTLR 4.13.2
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -160,25 +160,25 @@ public class LangParserBaseListener implements LangParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclArray(LangParser.DeclArrayContext ctx) { }
+	@Override public void enterDeclaracao(LangParser.DeclaracaoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeclArray(LangParser.DeclArrayContext ctx) { }
+	@Override public void exitDeclaracao(LangParser.DeclaracaoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclSimples(LangParser.DeclSimplesContext ctx) { }
+	@Override public void enterListaIds(LangParser.ListaIdsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeclSimples(LangParser.DeclSimplesContext ctx) { }
+	@Override public void exitListaIds(LangParser.ListaIdsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -287,18 +287,6 @@ public class LangParserBaseListener implements LangParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitWhileStatement(LangParser.WhileStatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterForStatement(LangParser.ForStatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitForStatement(LangParser.ForStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
